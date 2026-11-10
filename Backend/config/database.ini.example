@@ -1,0 +1,43 @@
+; ---------------------------------------------------------------
+; Purchase Register & Costing - database & app settings (READ-ONLY: the app never writes)
+; Copy to database.ini (same folder) and fill in. Never commit database.ini.
+; Environment variables PR_DB_HOST, PR_DB_PORT, PR_DB_NAME, PR_DB_USER,
+; PR_DB_PASSWORD, PR_DB_SSLMODE override this file.
+; ---------------------------------------------------------------
+
+[postgres]
+host     = your-db-host.example.com
+port     = 5432
+dbname   = your_db
+user     = your_user
+password = 
+; disable | allow | prefer | require | verify-ca | verify-full  (AWS RDS: require)
+sslmode  = require
+pool_max = 6
+
+[app]
+; schema + table-name prefix of the replicated Odoo tables (silver.odoo_account_move ...)
+silver_schema = silver
+table_prefix = odoo_
+; results are kept in memory this many minutes (0 = no cache); "Refresh data" button clears it
+cache_ttl_minutes = 30
+; seconds before a single query is cancelled
+statement_timeout_seconds = 300
+
+[freight]
+; words (comma separated, any case) that mark a vendor-bill line as FREIGHT
+; - searched in the GL account name and the product name
+keywords = freight, carriage, cartage, transport, courier, logistic, lorry, octroi, loading, unloading, handling charge, customs, duty, clearing, forwarding, demurrage, port charge, ocean, airway
+; words that mark a VENDOR as a transporter - all lines of its bills count as freight
+transporter_keywords = transport, logistic, roadways, cargo, courier, carrier, movers, express, freight, shipping
+
+[server]
+port = 8050
+
+[price_impact]
+; product_template columns that hold the business segment / product line (custom Odoo fields), e.g. x_business_segment
+; leave empty -> segment = second level of the product category
+segment_field =
+product_line_field =
+; a rate change within this % counts as "Nil effect" (0 = exactly equal, as in the finance workbook)
+nil_band_pct = 0
